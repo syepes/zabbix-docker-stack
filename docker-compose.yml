@@ -1,0 +1,86 @@
+version: '2'
+services:
+  zabbix-db:
+    build: zabbix-db-pgsql
+    image: zabbix-db-pgsql
+    container_name: zabbix-db
+    hostname: zabbix-db
+    restart: always
+    ports:
+      - "5432:5432"
+  zabbix-server:
+    build: zabbix-server
+    image: zabbix-server
+    container_name: zabbix-server
+    hostname: zabbix-server
+    restart: always
+    links:
+      - zabbix-db
+    environment:
+      - PGSQL_HOST=zabbix-db
+      - ZBX_SRV_HOST=127.0.0.1,zabbix-server
+    ports:
+      - "10051:10051"
+  zabbix-web:
+    build: zabbix-web
+    image: zabbix-web
+    container_name: zabbix-web
+    hostname: zabbix-web
+    restart: always
+    links:
+      - zabbix-db
+      - zabbix-server
+    environment:
+      - PGSQL_HOST=zabbix-db
+      - ZBX_SRV_HOST=zabbix-server
+    ports:
+      - "80:80"
+  zabbix-proxy_act:
+    build: zabbix-proxy-sqlite
+    image: zabbix-proxy-sqlite
+    container_name: zabbix-proxy_act
+    hostname: zabbix-proxy_act
+    restart: always
+    links:
+      - zabbix-server
+    environment:
+      - ZBX_PXY_MODE=0
+      - ZBX_SRV_HOST=zabbix-server
+  zabbix-proxy_pas:
+    build: zabbix-proxy-sqlite
+    image: zabbix-proxy-sqlite
+    container_name: zabbix-proxy_pas
+    hostname: zabbix-proxy_pas
+    restart: always
+    links:
+      - zabbix-server
+    environment:
+      - ZBX_PXY_MODE=1
+      - ZBX_SRV_HOST=
+      - ZBX_SRV_HOST_ACT=zabbix-server
+  zabbix-agent1:
+    build: zabbix-agent
+    image: zabbix-agent
+    container_name: zabbix-agent1
+    hostname: zabbix-agent1
+    restart: always
+    links:
+      - zabbix-server
+      - zabbix-proxy_act
+      - zabbix-proxy_pas
+    environment:
+      - ZBX_SRV_HOST=127.0.0.1,zabbix-server
+  zabbix-agent2:
+    build: zabbix-agent
+    image: zabbix-agent
+    container_name: zabbix-agent2
+    hostname: zabbix-agent2
+    restart: always
+    links:
+      - zabbix-server
+      - zabbix-proxy_act
+      - zabbix-proxy_pas
+    environment:
+      - ZBX_SRV_HOST_ACT=zabbix-proxy_act
+      - ZBX_AGT_NUM=0
+

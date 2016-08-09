@@ -1,0 +1,12 @@
+*~
+*.swp
+.DS_Store
+.DS_Store?
+logs/
+temp/
+*.rsa
+*.rsa.pub
+*.key
+*.pem
+*.p12
+*.cer
