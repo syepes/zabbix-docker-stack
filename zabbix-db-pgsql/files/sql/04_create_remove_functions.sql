@@ -20,17 +20,21 @@ BEGIN
         tablename := result.tablename;
 
     -- Was it called properly?
-        IF tabletype != 'month' AND tabletype != 'day' THEN
-      RAISE EXCEPTION 'Please specify "month" or "day" instead of %', tabletype;
+        IF tabletype != 'year' AND tabletype != 'month' AND tabletype != 'day' THEN
+      RAISE EXCEPTION 'Please specify "year" or "month" or "day" instead of %', tabletype;
         END IF;
 
 
-    --Check whether the table name has a day (YYYY_MM_DD) or month (YYYY_MM) format
-        IF length(substring(result.tablename from '[0-9_]*$')) = 10 AND tabletype = 'month' THEN
+    --Check whether the table name has a day (YYYY_MM_DD) or month (YYYY_MM) or year (YYYY)  format
+        IF length(substring(result.tablename from '[0-9_]*$')) = 10 AND tabletype = 'year' THEN
+            --This is a yearly partition YYYY
+            -- RAISE NOTICE 'Skipping table % when trying to delete "%" partitions (%)', result.tablename, tabletype, length(substring(result.tablename from '[0-9_]*$'));
+            CONTINUE;
+        ELSIF length(substring(result.tablename from '[0-9_]*$')) = 7 AND tabletype = 'month' THEN
             --This is a daily partition YYYY_MM_DD
             -- RAISE NOTICE 'Skipping table % when trying to delete "%" partitions (%)', result.tablename, tabletype, length(substring(result.tablename from '[0-9_]*$'));
             CONTINUE;
-        ELSIF length(substring(result.tablename from '[0-9_]*$')) = 7 AND tabletype = 'day' THEN
+        ELSIF length(substring(result.tablename from '[0-9_]*$')) = 4 AND tabletype = 'day' THEN
             --this is a monthly partition
             --RAISE NOTICE 'Skipping table % when trying to delete "%" partitions (%)', result.tablename, tabletype, length(substring(result.tablename from '[0-9_]*$'));
             CONTINUE;

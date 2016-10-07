@@ -4,7 +4,7 @@ set -e
 PGSQL_DB=${PGSQL_DB:="zabbix"}
 PGSQL_USER=${PGSQL_USER:="zabbix"}
 PGSQL_PASS=${PGSQL_PASS:-}
-PG_DATDIR="/var/lib/postgresql/9.5/data"
+PG_DATDIR="/var/lib/postgresql/${DB_VER}/data"
 PG_BINDIR="/usr/bin"
 
 

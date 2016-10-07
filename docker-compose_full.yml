@@ -7,7 +7,9 @@ services:
     hostname: zabbix-db
     restart: always
     ports:
-      - "5432:5432"
+      - 5432:5432
+    volumes:
+     - ./zabbix_db:/var/lib/pgsql
   zabbix-server:
     build: zabbix-server
     image: zabbix-server
@@ -35,6 +37,29 @@ services:
       - ZBX_SRV_HOST=zabbix-server
     ports:
       - "80:80"
+  zabbix-proxy_act:
+    build: zabbix-proxy-sqlite
+    image: zabbix-proxy-sqlite
+    container_name: zabbix-proxy_act
+    hostname: zabbix-proxy_act
+    restart: always
+    links:
+      - zabbix-server
+    environment:
+      - ZBX_PXY_MODE=0
+      - ZBX_SRV_HOST=zabbix-server
+  zabbix-proxy_pas:
+    build: zabbix-proxy-sqlite
+    image: zabbix-proxy-sqlite
+    container_name: zabbix-proxy_pas
+    hostname: zabbix-proxy_pas
+    restart: always
+    links:
+      - zabbix-server
+    environment:
+      - ZBX_PXY_MODE=1
+      - ZBX_SRV_HOST=
+      - ZBX_SRV_HOST_ACT=zabbix-server
   zabbix-agent1:
     build: zabbix-agent
     image: zabbix-agent
@@ -43,6 +68,21 @@ services:
     restart: always
     links:
       - zabbix-server
+      - zabbix-proxy_act
+      - zabbix-proxy_pas
     environment:
       - ZBX_SRV_HOST=127.0.0.1,zabbix-server
+  zabbix-agent2:
+    build: zabbix-agent
+    image: zabbix-agent
+    container_name: zabbix-agent2
+    hostname: zabbix-agent2
+    restart: always
+    links:
+      - zabbix-server
+      - zabbix-proxy_act
+      - zabbix-proxy_pas
+    environment:
+      - ZBX_SRV_HOST_ACT=zabbix-proxy_act
+      - ZBX_AGT_NUM=0
 

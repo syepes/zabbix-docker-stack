@@ -1,7 +1,6 @@
 #!/bin/sh
 
-sed -e "s/.*\(PidFile=\).*/\1\/var\/run\/zabbix\/zabbix_agentd.pid/g" \
-    -e "s/^\(Server=\).*/\1$ZBX_SRV_HOST/g" \
+sed -e "s/^\(Server=\).*/\1$ZBX_SRV_HOST/g" \
     -e "s/^\(ServerActive=\).*/\1$ZBX_SRV_HOST_ACT/g" \
     -e "s/.*\(StartAgents=\).*/\1$ZBX_AGT_NUM/g" \
     -e "s/.*\(ListenPort=\).*/\1$ZBX_AGT_PORT/g" \

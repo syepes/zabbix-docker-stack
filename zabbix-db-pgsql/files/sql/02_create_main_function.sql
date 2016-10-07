@@ -23,6 +23,8 @@ IF selector = 'day' THEN
 timeformat := 'YYYY_MM_DD';
 ELSIF selector = 'month' THEN
 timeformat := 'YYYY_MM';
+ELSIF selector = 'year' THEN
+timeformat := 'YYYY';
 END IF;
 
 _interval := '1 ' || selector;
