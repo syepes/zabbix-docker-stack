@@ -6,6 +6,7 @@ This CHANGELOG follows the format listed at [Keep A Changelog](http://keepachang
 ## [Unreleased]
 ### Fixed
 - postgresql Docker volume
+- mibs path
 
 ## 0.2.0 - 2016-10-07
 ### Changed

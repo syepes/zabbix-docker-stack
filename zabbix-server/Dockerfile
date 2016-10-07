@@ -64,7 +64,8 @@ RUN         apk add ${APK_FLAGS_DEV} --virtual build-deps tzdata alpine-sdk core
             && cp conf/zabbix_server.conf /etc/zabbix/ \
             && cp src/zabbix_agent/zabbix_agentd /usr/sbin/ \
             && cp conf/zabbix_agentd.conf /etc/zabbix/ \
-            && chown -R zabbix:root /etc/zabbix \
+            && cp /usr/share/snmp/mibs/* ${MIBDIRS}/ \
+            && chown -R zabbix:root /etc/zabbix /var/lib/zabbix/ \
             && sed -e "s/.*\(PidFile=\).*/\1\/var\/run\/zabbix\/zabbix_server.pid/g" \
                    -e "s/^\(LogFile=\).*/\1\/var\/log\/zabbix\/zabbix_server.log/g" \
                    -e "s/^#\(FpingLocation=.*\)/\1/g" \
