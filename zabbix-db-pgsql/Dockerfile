@@ -43,7 +43,7 @@ ADD         files/*.sh /
 RUN         chmod 755 /*.sh
 
 EXPOSE      5432/TCP
-VOLUME      ["/var/lib/pgsql"]
+VOLUME      ["/var/lib/postgresql"]
 CMD         ["/run.sh"]
 
 HEALTHCHECK --interval=15s --timeout=3s --retries=3 CMD sudo -u postgres pg_ctl status -D /var/lib/postgresql/${DB_VER}/data || exit 1
